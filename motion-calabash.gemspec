@@ -7,7 +7,7 @@ Gem::Specification.new do |s|
   s.author = 'Karl Krukow'
   s.email = 'karl@lesspainful.com'
   s.homepage = 'http://www.lesspainful.com'
-  s.version = '0.0.1'
+  s.version = '0.0.2'
   s.summary = %q{Calabash support for RubyMotion}
   s.description = %q{This will download and link-in calabash}
   s.files = `git ls-files`.split("\n")

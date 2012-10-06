@@ -25,3 +25,55 @@
 Motion::Project::App.setup do |app|
   app.vendor_project File.join(File.dirname(__FILE__),"..",'..','framework'), :static
 end
+
+
+namespace 'calabash' do
+  desc "Run Calabash tests. Params are passed to cucumber"
+
+  # Retrieve optional Calabash args.
+  def gather_calabash_env
+     sdk = ENV['sdk'] || ENV['SDK_VERSION'] || "6.0" #Calabash env vars
+     os = ENV['os'] || ENV['OS'] || 'ios5' #Calabash env vars
+     device = ENV['device'] || ENV['DEVICE'] || 'iphone' #Calabash env vars
+     {:sdk => sdk, :os => os, :device => device, :str => "SDK_VERSION=#{sdk} OS=#{os} DEVICE=#{device}"}
+  end
+
+
+  task :run do
+    # Retrieve optional args to pass to cucumber.
+    args = ENV["args"] || ""
+
+    calabash_env = gather_calabash_env
+
+    # Retrieve optional bundle path.
+    bundle_path = ENV['APP_BUNDLE_PATH']
+    unless bundle_path
+      build = "build/iPhoneSimulator-#{calabash_env[:sdk]}-Development"
+      unless File.exist?(build)
+        App.fail "No dir found in #{build}. Please build app first."
+      end
+      app = Dir.glob("#{build}/*").find {|d| /\.app$/.match(d)}
+      unless File.exist?(app)
+        App.fail "No .app found in #{build}. Please build app first."
+      end
+      bundle_path = File.expand_path("#{app}")
+    end
+
+    App.fail "No app found in #{bundle_path} (APP_BUNDLE_PATH)" unless File.exist?(bundle_path)
+
+    cmd = "#{calabash_env[:str]} APP_BUNDLE_PATH=\"#{bundle_path}\" cucumber #{args}"
+    App.info 'Run', cmd
+    system(cmd)
+  end
+
+  desc "Start Calabash console."
+  task :console do
+    # Retrieve configuration settings.
+    calabash_env = gather_calabash_env
+    cmd = "#{calabash_env[:str]} calabash-ios console"
+    App.info 'Run', cmd
+    system(cmd)
+  end
+
+end
+

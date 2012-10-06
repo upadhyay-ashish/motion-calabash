@@ -22,8 +22,15 @@ For Calabash see: [http://calaba.sh](http://calaba.sh)
 
 == Usage
 
-motion-calabash introduces a +calabash+ Rake-task namespace to your project. The namespace currently contains two tasks: +calabash:run+ and +calabash:console+. The run task can be used to run your suite of Calabash tests on your development build. You can supply the following parameters +sdk+, +device+, +os+. You can also run +calabash:console+ to start the Calabash console (+device+ and +os+ params apply too).
+motion-calabash introduces a +calabash+ Rake-task namespace to your project.
+The namespace currently contains two tasks: +calabash:run+ and +calabash:console+.
+The +run+ task can be used to run your suite of Calabash tests on your development build.
+You can supply the following parameters +sdk+, +device+, +os+.
+You can also run +calabash:console+ to start the Calabash console
+(+device+ and +os+ params apply too).
 
   $ rake calabash:run
   $ rake calabash:run sdk=5.1
+  $ rake calabash:run sdk=6.0 device=ipad
+  $ rake calabash:run args="features/my_first.feature --tags @a"
   $ rake calabash:console
