@@ -3,7 +3,7 @@
 Allows RubyMotion projects to easily use Calabash iOS for automated acceptance
 testing.
 
-For Calabash see: [http://calaba.sh](http://calaba.sh)
+For Calabash see: http://calaba.sh
 
 == Requirements
 
