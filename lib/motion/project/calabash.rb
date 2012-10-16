@@ -23,7 +23,9 @@
 # POSSIBILITY OF SUCH DAMAGE.
 
 Motion::Project::App.setup do |app|
-  app.vendor_project File.join(File.dirname(__FILE__),"..",'..','framework'), :static
+ app.development do
+   app.vendor_project File.join(File.dirname(__FILE__),"..",'..','framework'), :static
+ end
 end
 
 
