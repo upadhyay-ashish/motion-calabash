@@ -35,9 +35,9 @@ namespace 'calabash' do
   # Retrieve optional Calabash args.
   def gather_calabash_env
      sdk = ENV['sdk'] || ENV['SDK_VERSION'] || "6.0" #Calabash env vars
-     os = ENV['os'] || ENV['OS'] || 'ios5' #Calabash env vars
+     os = ENV['os'] || ENV['OS'] || 'ios6' #Calabash env vars
      device = ENV['device'] || ENV['DEVICE'] || 'iphone' #Calabash env vars
-     {:sdk => sdk, :os => os, :device => device, :str => "SDK_VERSION=#{sdk} OS=#{os} DEVICE=#{device}"}
+     {"SDK_VERSION" => sdk, "OS" => os, "DEVICE" => device}
   end
 
 
@@ -50,7 +50,7 @@ namespace 'calabash' do
     # Retrieve optional bundle path.
     bundle_path = ENV['APP_BUNDLE_PATH']
     unless bundle_path
-      build = "build/iPhoneSimulator-#{calabash_env[:sdk]}-Development"
+      build = "build/iPhoneSimulator-#{calabash_env["SDK_VERSION"]}-Development"
       unless File.exist?(build)
         App.fail "No dir found in #{build}. Please build app first."
       end
@@ -63,9 +63,10 @@ namespace 'calabash' do
 
     App.fail "No app found in #{bundle_path} (APP_BUNDLE_PATH)" unless File.exist?(bundle_path)
 
-    cmd = "#{calabash_env[:str]} APP_BUNDLE_PATH=\"#{bundle_path}\" cucumber #{args}"
-    App.info 'Run', cmd
-    system(cmd)
+    calabash_env["APP_BUNDLE_PATH"] = "\"#{bundle_path}\""
+
+    App.info 'Run', "#{calabash_env} cucumber #{args.join(" ")}"
+    exec(calabash_env,"cucumber",*args)
   end
 
   desc "Start Calabash console."
@@ -73,8 +74,9 @@ namespace 'calabash' do
     # Retrieve configuration settings.
     calabash_env = gather_calabash_env
     cmd = "#{calabash_env[:str]} calabash-ios console"
-    App.info 'Run', cmd
-    system(cmd)
+    App.info 'Run', "#{calabash_env} calabash-ios console"
+
+    exec(calabash_env,"calabash-ios","console")
   end
 
 end
