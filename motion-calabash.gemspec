@@ -7,12 +7,12 @@ Gem::Specification.new do |s|
   s.author = 'Karl Krukow'
   s.email = 'karl@lesspainful.com'
   s.homepage = 'http://www.lesspainful.com'
-  s.version = '0.9.113'
+  s.version = '0.9.126'
   s.summary = %q{Calabash support for RubyMotion}
-  s.description = %q{This will download and link-in calabash}
-  s.files = `git ls-files`.split("\n")
+  s.description = %q{This link-in calabash for iOS}
+  s.files = ["lib/framework/libcalabashunit-0.9.126"].concat(`git ls-files`.split("\n"))
   s.require_paths = ["lib"]
 
-  s.add_dependency("calabash-cucumber", "0.9.113")
+  s.add_dependency("calabash-cucumber", "0.9.126")
 
 end
