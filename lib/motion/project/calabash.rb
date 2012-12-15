@@ -35,7 +35,11 @@ namespace 'calabash' do
   # Retrieve optional Calabash args.
   def gather_calabash_env
      sdk = ENV['sdk'] || ENV['SDK_VERSION'] || "6.0" #Calabash env vars
-     os = ENV['os'] || ENV['OS'] || 'ios6' #Calabash env vars
+     major = sdk[0]
+     os = ENV['os'] || ENV['OS']
+     if os.nil?
+       os = "ios#{major}"
+     end
      device = ENV['device'] || ENV['DEVICE'] || 'iphone' #Calabash env vars
      {"SDK_VERSION" => sdk, "OS" => os, "DEVICE" => device}
   end
@@ -50,13 +54,17 @@ namespace 'calabash' do
     # Retrieve optional bundle path.
     bundle_path = ENV['APP_BUNDLE_PATH']
     unless bundle_path
-      build = "build/iPhoneSimulator-#{calabash_env["SDK_VERSION"]}-Development"
+      build = "build"
       unless File.exist?(build)
-        App.fail "No dir found in #{build}. Please build app first."
+        App.fail "No dir found: #{build}. Please build app first."
       end
-      app = Dir.glob("#{build}/*").find {|d| /\.app$/.match(d)}
-      unless File.exist?(app)
-        App.fail "No .app found in #{build}. Please build app first."
+      sim_dir = Dir.glob("#{build}/*").find {|d| /Simulator-/.match(d)}
+      unless sim_dir and File.directory?(sim_dir)
+        App.fail "No Simulator dir found in #{build}. Please build app for simulator first."
+      end
+      app = Dir.glob("#{sim_dir}/*").find {|d| /\.app$/.match(d)}
+      unless app and File.exist?(app)
+        App.fail "No .app found in #{sim_dir}. Please build app for simulator first."
       end
       bundle_path = File.expand_path("#{app}")
     end
@@ -65,8 +73,9 @@ namespace 'calabash' do
 
     calabash_env["APP_BUNDLE_PATH"] = "\"#{bundle_path}\""
 
-    App.info 'Run', "#{calabash_env} cucumber #{args.join(" ")}"
-    exec(calabash_env,"cucumber",*args)
+    App.info 'Run', "#{calabash_env} cucumber #{args}"
+    env_str = calabash_env.map {|envname, envval| "#{envname}=#{envval}"}.join(" ")
+    system("#{env_str} cucumber #{args}")
   end
 
   desc "Start Calabash console."
