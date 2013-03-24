@@ -34,13 +34,13 @@ namespace 'calabash' do
 
   # Retrieve optional Calabash args.
   def gather_calabash_env
-     sdk = ENV['sdk'] || ENV['SDK_VERSION'] || "6.0" #Calabash env vars
+    sdk = ENV['target'] || ENV['sdk'] || ENV['SDK_VERSION'] || "6.1" #Calabash env vars
      major = sdk[0]
      os = ENV['os'] || ENV['OS']
      if os.nil?
        os = "ios#{major}"
      end
-     device = ENV['device'] || ENV['DEVICE'] || 'iphone' #Calabash env vars
+     device = ENV['device_family'] || ENV['device'] || ENV['DEVICE'] || 'iphone' #Calabash env vars
      {"SDK_VERSION" => sdk, "OS" => os, "DEVICE" => device}
   end
 
@@ -49,33 +49,46 @@ namespace 'calabash' do
     # Retrieve optional args to pass to cucumber.
     args = ENV["args"] || ""
 
+    ENV['DEVICE_ENDPOINT'] ||= 'http://localhost:37265/'
+
+    target = ARGV[1] || 'simulator'
+
+
+    project_config_vars = Motion::Project::App.config.variables
+
+    bundle_id = project_config_vars["identifier"]
+
     calabash_env = gather_calabash_env
 
-    # Retrieve optional bundle path.
-    bundle_path = ENV['APP_BUNDLE_PATH']
-    unless bundle_path
-      build = "build"
-      unless File.exist?(build)
-        App.fail "No dir found: #{build}. Please build app first."
+    calabash_env['DEVICE_TARGET'] = target
+    calabash_env['BUNDLE_ID'] = bundle_id
+
+    unless target == 'device'
+      # Retrieve optional bundle path.
+      bundle_path = ENV['APP_BUNDLE_PATH']
+      unless bundle_path
+        build = "build"
+        unless File.exist?(build)
+          App.fail "No dir found: #{build}. Please build app first."
+        end
+        sim_dir = Dir.glob("#{build}/*").find {|d| /Simulator-/.match(d)}
+        unless sim_dir and File.directory?(sim_dir)
+          App.fail "No Simulator dir found in #{build}. Please build app for simulator first."
+        end
+        app = Dir.glob("#{sim_dir}/*").find {|d| /\.app$/.match(d)}
+        unless app and File.exist?(app)
+          App.fail "No .app found in #{sim_dir}. Please build app for simulator first."
+        end
+        bundle_path = File.expand_path("#{app}")
       end
-      sim_dir = Dir.glob("#{build}/*").find {|d| /Simulator-/.match(d)}
-      unless sim_dir and File.directory?(sim_dir)
-        App.fail "No Simulator dir found in #{build}. Please build app for simulator first."
-      end
-      app = Dir.glob("#{sim_dir}/*").find {|d| /\.app$/.match(d)}
-      unless app and File.exist?(app)
-        App.fail "No .app found in #{sim_dir}. Please build app for simulator first."
-      end
-      bundle_path = File.expand_path("#{app}")
+      App.fail "No app found in #{bundle_path} (APP_BUNDLE_PATH)" unless File.exist?(bundle_path)
+      calabash_env["APP_BUNDLE_PATH"] = bundle_path
     end
 
-    App.fail "No app found in #{bundle_path} (APP_BUNDLE_PATH)" unless File.exist?(bundle_path)
-
-    calabash_env["APP_BUNDLE_PATH"] = "\"#{bundle_path}\""
 
     App.info 'Run', "#{calabash_env} cucumber #{args}"
-    env_str = calabash_env.map {|envname, envval| "#{envname}=#{envval}"}.join(" ")
-    system("#{env_str} cucumber #{args}")
+
+    exec(calabash_env,"cucumber", *(args.split(' ')))
   end
 
   desc "Start Calabash console."
@@ -86,6 +99,27 @@ namespace 'calabash' do
     App.info 'Run', "#{calabash_env} calabash-ios console"
 
     exec(calabash_env,"calabash-ios","console")
+  end
+
+  desc "Scaffold Calabash features folder."
+  task :scaffold do
+     # Retrieve configuration settings.
+     calabash_env = gather_calabash_env
+     cmd = '(echo "" | calabash-ios gen) &> /dev/null'
+     App.info 'Run', "Scaffolding features"
+     App.info 'Info', "Run rake calabash:run to try"
+
+     env_str = calabash_env.map {|envname, envval| "export #{envname}=#{envval};"}.join(" ")
+     system("(#{env_str}) && #{cmd}")
+
+
+     this_path = File.expand_path(__FILE__)
+     launch_path = File.join(this_path,'..','..','..','..','scripts','launch.rb')
+     launch_path = File.expand_path(launch_path)
+     puts "Copy launch file #{launch_path} to features/support/launch.rb"
+     FileUtils.cp(launch_path,File.join('features','support','launch.rb'))
+
+
   end
 
 end
