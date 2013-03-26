@@ -105,13 +105,11 @@ namespace 'calabash' do
   task :scaffold do
      # Retrieve configuration settings.
      calabash_env = gather_calabash_env
-     cmd = '(echo "" | calabash-ios gen) &> /dev/null'
+     cmd = '(echo "" | calabash-ios gen) > /dev/null'
      App.info 'Run', "Scaffolding features"
      App.info 'Info', "Run rake calabash:run to try"
 
-     env_str = calabash_env.map {|envname, envval| "export #{envname}=#{envval};"}.join(" ")
-     system("(#{env_str}) && #{cmd}")
-
+     system(cmd)
 
      this_path = File.expand_path(__FILE__)
      launch_path = File.join(this_path,'..','..','..','..','scripts','launch.rb')
