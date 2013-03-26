@@ -28,23 +28,23 @@ If you're using a Gemfile in your project (which you probably should), please al
 motion-calabash introduces a +calabash+ Rake-task namespace to your project.
 The namespace currently contains three tasks: +scaffold+, +run+, +console+.
 
-The +calabash:scaffold+ target will generate the file structure and launch hooks needed to run calabash tests on your RubyMotion app.
+The +scaffold+ target will generate the file structure and launch hooks needed to run calabash tests on your RubyMotion app.
 
-    $ krukow:~/github/rubymotion-inspect$ rake calabash:scaffold
-      Run Scaffolding features
-      Info Run rake calabash:run to try
-      Copy launch file /Users/krukow/.rbenv/versions/1.9.3-p194/lib/ruby/gems/1.9.1/gems/motion-calabash-0.9.137/scripts/launch.rb to features/support/launch.rb
+  $ krukow:~/github/rubymotion-inspect$ rake calabash:scaffold
+    Run Scaffolding features
+    Info Run rake calabash:run to try
+    Copy launch file /Users/krukow/.rbenv/versions/1.9.3-p194/lib/ruby/gems/1.9.1/gems/motion-calabash-0.9.137/scripts/launch.rb to features/support/launch.rb
 
-  krukow:~/github/rubymotion-inspect$ tree features
-  features
-  ├── my_first.feature
-  ├── step_definitions
-  │   ├── calabash_steps.rb
-  │   └── my_first_steps.rb
-  └── support
-      ├── env.rb
-      ├── hooks.rb
-      └── launch.rb
+  $ krukow:~/github/rubymotion-inspect$ tree features
+    features
+    ├── my_first.feature
+    ├── step_definitions
+    │   ├── calabash_steps.rb
+    │   └── my_first_steps.rb
+    └── support
+        ├── env.rb
+        ├── hooks.rb
+        └── launch.rb
 
 
 The +run+ task can be used to run your suite of Calabash tests on your development build. You can run on simulator or on a USB connected device.
