@@ -3,7 +3,7 @@
 Allows RubyMotion projects to easily use Calabash iOS for automated acceptance
 testing.
 
-For Calabash see: http://calaba.sh
+For information about Calabash see: http://calaba.sh
 
 == Requirements
 
@@ -20,17 +20,54 @@ For Calabash see: http://calaba.sh
      require 'rubygems'
      require 'motion-calabash'
 
+If you're using a Gemfile in your project (which you probably should), please also add `gem 'motion.calabash'` (possibly a version) to this file.
+
+
 == Usage
 
 motion-calabash introduces a +calabash+ Rake-task namespace to your project.
-The namespace currently contains two tasks: +run+ and +console+.
-The +run+ task can be used to run your suite of Calabash tests on your development build.
-You can supply the following parameters +sdk+, +device+, +os+.
-You can also run +console+ to start the Calabash console
-(+device+ and +os+ params apply too).
+The namespace currently contains three tasks: +scaffold+, +run+, +console+.
+
+The +calabash:scaffold+ target will generate the file structure and launch hooks needed to run calabash tests on your RubyMotion app.
+
+    $ krukow:~/github/rubymotion-inspect$ rake calabash:scaffold
+      Run Scaffolding features
+      Info Run rake calabash:run to try
+      Copy launch file /Users/krukow/.rbenv/versions/1.9.3-p194/lib/ruby/gems/1.9.1/gems/motion-calabash-0.9.137/scripts/launch.rb to features/support/launch.rb
+
+  krukow:~/github/rubymotion-inspect$ tree features
+  features
+  ├── my_first.feature
+  ├── step_definitions
+  │   ├── calabash_steps.rb
+  │   └── my_first_steps.rb
+  └── support
+      ├── env.rb
+      ├── hooks.rb
+      └── launch.rb
+
+
+The +run+ task can be used to run your suite of Calabash tests on your development build. You can run on simulator or on a USB connected device.
+
+You can supply the following parameters +target+, +device+, +os+, +args+
 
   $ rake calabash:run
-  $ rake calabash:run sdk=5.1
-  $ rake calabash:run sdk=6.0 device=ipad
-  $ rake calabash:run args="features/my_first.feature --tags @a"
+  $ rake calabash:run simulator
+  $ rake calabash:run device
+  $ rake calabash:run simulator target=5.1
+  $ rake calabash:run simulator target=6.0 device=ipad
+  $ rake calabash:run simulator args="features/my_first.feature --tags @a"
+
+The +console+ task gives you an interactive console where you can try out Calabash functions and explore your app. It is very useful when writing automated tests. See also: [Explore interactively!](https://github.com/calabash/calabash-ios/wiki/01-Getting-started-guide) and [Ruby API](https://github.com/calabash/calabash-ios/wiki/03.5-Calabash-iOS-Ruby-API).
+
   $ rake calabash:console
+
+(+device+ and +os+ params apply too).
+
+== Examples
+
+Two sample projects
+
+[Beers](https://github.com/krukow/motion-calabash-inspect2013)
+
+[RubyMotion-Inspect](https://github.com/calabash/rubymotion-inspect)
