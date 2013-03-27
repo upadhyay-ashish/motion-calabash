@@ -95,7 +95,7 @@ namespace 'calabash' do
   task :console do
     # Retrieve configuration settings.
     calabash_env = gather_calabash_env
-    cmd = "#{calabash_env[:str]} calabash-ios console"
+
     App.info 'Run', "#{calabash_env} calabash-ios console"
 
     exec(calabash_env,"calabash-ios","console")
@@ -116,7 +116,6 @@ namespace 'calabash' do
      launch_path = File.expand_path(launch_path)
      puts "Copy launch file #{launch_path} to features/support/launch.rb"
      FileUtils.cp(launch_path,File.join('features','support','launch.rb'))
-
 
   end
 
