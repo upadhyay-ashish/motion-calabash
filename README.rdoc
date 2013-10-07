@@ -20,7 +20,7 @@ For information about Calabash see: http://calaba.sh
      require 'rubygems'
      require 'motion-calabash'
 
-If you're using a Gemfile in your project (which you probably should), please also add `gem 'motion.calabash'` (possibly a version) to this file.
+If you're using a Gemfile in your project (which you probably should), please also add `gem 'motion-calabash'` (possibly a version) to this file.
 
 
 == Usage
