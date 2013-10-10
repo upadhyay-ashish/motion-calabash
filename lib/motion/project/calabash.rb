@@ -34,7 +34,7 @@ namespace 'calabash' do
 
   # Retrieve optional Calabash args.
   def gather_calabash_env
-    sdk = ENV['target'] || ENV['sdk'] || ENV['SDK_VERSION'] || "6.1" #Calabash env vars
+    sdk = ENV['target'] || ENV['sdk'] || ENV['SDK_VERSION'] || "7.0" #Calabash env vars
      major = sdk[0]
      os = ENV['os'] || ENV['OS']
      if os.nil?
