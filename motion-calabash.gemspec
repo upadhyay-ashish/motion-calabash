@@ -13,6 +13,6 @@ Gem::Specification.new do |s|
   s.files = ["lib/framework/libcalabashuni-0.9.160.a"].concat(`git ls-files`.split("\n"))
   s.require_paths = ["lib"]
 
-  s.add_dependency("calabash-cucumber", "0.9.168")
+  s.add_dependency("calabash-cucumber", "~> 0.9.160")
 
 end
