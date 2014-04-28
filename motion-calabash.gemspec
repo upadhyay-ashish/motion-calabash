@@ -10,7 +10,7 @@ Gem::Specification.new do |s|
   s.version = '0.9.160.1'
   s.summary = %q{Calabash support for RubyMotion}
   s.description = %q{This linkes-in calabash for iOS}
-  s.files = ["lib/framework/libcalabashuni-0.9.168.a"].concat(`git ls-files`.split("\n"))
+  #s.files = ["lib/framework/libcalabashuni-0.9.168.a"].concat(`git ls-files`.split("\n"))
   s.require_paths = ["lib"]
 
   s.add_dependency("calabash-cucumber", "0.9.168")
